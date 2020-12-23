@@ -1,0 +1,1 @@
+web: java $JVM_OPTS -cp target/agent-autumn.jar clojure.main -m agent-autumn.server
