@@ -9,5 +9,7 @@
                  [http-kit "2.3.0"]
                  [environ "1.1.0"]
                  [metosin/compojure-api "1.1.11"]
-                 [ring/ring-mock "0.4.0"]]
+                 [ring/ring-mock "0.4.0"]
+                 [org.clojure/core.async "1.3.610"]
+                 [org.clojure/data.codec "0.1.1"]]
   :repl-options {:init-ns agent-autumn.core})

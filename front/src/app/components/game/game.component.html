@@ -1,0 +1,130 @@
+
+<div *ngIf="!(state.sessionID)" class="d-flex flex-column text-center">
+  <div>
+    <button class="nes-btn is-error" (click)="host()">HOST</button>
+    <dialog class="nes-dialog is-rounded" id="host-modal">
+      <form method="dialog" [formGroup]="hostForm">
+        <p class="title">Host Game</p>
+        <p>Player Name: </p>
+        <div class="nes-field">
+          <label for="host-name">Player Name:</label>
+          <input type="text" id="host-name" class="nes-input" formControlName="playerName">
+        </div>
+        <div class="nes-field">
+          <label for="player-count">Additional Player Count:</label>
+          <input type="number" id="player-count" class="nes-input" formControlName="addlPlayerCount">
+        </div>
+        <div class="nes-field">
+          <label for="duration">Game Clock (minutes):</label>
+          <input type="number" id="duration" class="nes-input" formControlName="durationMinutes">
+        </div>
+        <menu class="dialog-menu">
+          <button class="nes-btn" (click)="cancelHost()">Cancel</button>
+          <button class="nes-btn is-primary" (click)="confirmHost()">Confirm</button>
+        </menu>
+      </form>
+    </dialog>
+  </div>
+  <div>
+    <button class="nes-btn is-error" (click)="join()">JOIN</button>
+    <dialog class="nes-dialog is-rounded" id="join-modal">
+      <form method="dialog" [formGroup]="joinForm">
+        <p class="title">Host Game</p>
+        <p>Player Name: </p>
+        <div class="nes-field">
+          <label for="session-id">Session ID:</label>
+          <input type="text" id="session-id" class="nes-input" formControlName="sessionID">
+        </div>
+        <div class="nes-field">
+          <label for="player-name">Player Name:</label>
+          <input type="text" id="player-name" class="nes-input" formControlName="playerName">
+        </div>
+        <menu class="dialog-menu">
+          <button class="nes-btn" (click)="cancelJoin()">Cancel</button>
+          <button class="nes-btn is-primary" (click)="confirmJoin()">Confirm</button>
+        </menu>
+      </form>
+    </dialog>
+  </div>
+</div>
+<div *ngIf="state.sessionID && state.isHost && state.joining" class="text-center">
+  <h3>Waiting for confirmation of host ...</h3>
+</div>
+<div *ngIf="state.sessionID && !state.isHost && state.joining" class="text-center">
+  <h3>Waiting for confirmation of join ...</h3>
+  <button (click)="cancelJoinWait()">Cancel</button>
+</div>
+<div *ngIf="state.sessionID && !state.joining && !state.haveAllJoined" class="text-center">
+  <h3>Waiting for players to join ...</h3>
+</div>
+<div *ngIf="state.haveAllJoined && !state.endTime && state.isHost" class="text-center">
+  <button class="nes-btn is-success" (click)="startGame()">START GAME</button>
+</div>
+<div *ngIf="state.haveAllJoined && !state.endTime && !state.isHost" class="text-center">
+  <h3>Waiting for host to start game ...</h3>
+</div>
+<div *ngIf="state.endTime && !state.spy" class="d-flex flex-column text-center">
+  <div>{{countdown}}</div>
+  <div class="nes-container with-title" *ngIf="state.role=='SPY' && !state.guess">
+    <span class="title">Locations</span>
+    <div class="d-flex flex-column text-center">
+      <div *ngFor="let loc of state.locations; index as i">
+        <button class="nes-btn is-primary" (click)="guess(loc)">{{loc}}</button>
+        <button class="nes-btn is-error" (click)="toggleActiveLoc(i)">X</button>
+      </div>
+    </div>
+    <dialog class="nes-dialog is-rounded" id="guess-modal">
+      <form method="dialog">
+        <p class="title">Guess?</p>
+        <p>Are you sure you wish to guess '{{state.guess}}'?</p>
+        <menu class="dialog-menu">
+          <button class="nes-btn" (click)="cancelGuess()">Cancel</button>
+          <button class="nes-btn is-primary" (click)="confirmGuess()">Confirm</button>
+        </menu>
+      </form>
+    </dialog>
+  </div>
+  <div class="nes-container with-title" *ngIf="state.role=='SPY' && state.guess">
+    <div>Guessed: {{state.guess}}</div>
+  </div>
+  <div class="nes-container with-title" *ngIf="!state.vote">
+    <span class="title">Players</span>
+    <div class="d-flex flex-column text-center">
+      <div *ngFor="let player of state.players; index as i">
+        <button class="nes-btn is-primary" (click)="vote(player)">{{player}}</button>
+        <button class="nes-btn is-error" (click)="toggleActivePlayer(i)">X</button>
+      </div>
+    </div>
+    <dialog class="nes-dialog is-rounded" id="vote-modal">
+      <form method="dialog">
+        <p class="title">Vote?</p>
+        <p>Are you sure you wish to vote for '{{state.guess}}'?</p>
+        <menu class="dialog-menu">
+          <button class="nes-btn" (click)="cancelVote()">Cancel</button>
+          <button class="nes-btn is-primary" (click)="confirmVote()">Confirm</button>
+        </menu>
+      </form>
+    </dialog>
+  </div>
+  <div class="nes-container with-title" *ngIf="state.vote">
+    <div>Voted: {{state.vote}}</div>
+  </div>
+</div>
+<div *ngIf="state.spy" class="d-flex flex-column text-center">
+  <div>{{state.result}}</div>
+  <div *ngIf="state.role!='SPY'">Spy: {{state.spy}}</div>
+  <div *ngIf="state.role=='SPY'">Location: {{state.location}}</div>
+</div>
+<div *ngIf="state.sessionID && state.isHost" class="d-flex flex-column text-center">
+  <div><button class="nes-btn is-error" (click)="close()">CLOSE GAME</button></div>
+  <dialog class="nes-dialog is-rounded" id="close-modal">
+    <form method="dialog">
+      <p class="title">Close?</p>
+      <p>Are you sure you wish to close this game session?</p>
+      <menu class="dialog-menu">
+        <button class="nes-btn" (click)="cancelClose()">Cancel</button>
+        <button class="nes-btn is-primary" (click)="confirmClose()">Confirm</button>
+      </menu>
+    </form>
+  </dialog>
+</div>

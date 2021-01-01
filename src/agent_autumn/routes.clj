@@ -1,16 +1,17 @@
 (ns agent-autumn.routes
-  (:require [compojure.api.sweet :as sweet]
+  (:require [clojure.edn :as edn]
+            [compojure.api.sweet :as sweet]
             [compojure.api.core :as api]
             [compojure.route :as route]
             [ring.util.http-response :as http]
             [ring.util.response :as resp]
             [schema.core :as s]
             [agent-autumn.schema :as schema]
-            [agent-autumn.handlers :as h]
             [agent-autumn.util :as util]
-            [clojure.edn :as edn]))
+            [agent-autumn.game :as game]
+            [agent-autumn.handlers :as h]))
 
-(defn build-session-route [path method description query-params resp-schema handler]
+(defn build-session-route [path method description body-params resp-schema handler]
   (api/context
     path []
     :tags ["game"]
@@ -20,9 +21,14 @@
         method
         {:summary    ""
          :parameters {:path-params {:session-id s/Str}
-                      :query-params query-params}
+                      :body-params body-params}
          :responses  {200 {:schema resp-schema}}
          :handler    handler}))))
+
+(defn ok-or-bad-request [resp]
+  (if resp
+    (http/ok resp)
+    (http/bad-request)))
 
 (defn build-app []
   (-> {:swagger
@@ -41,40 +47,37 @@
                            :parameters {:body-params schema/NewGameSchema}
                            :responses  {200 {:schema schema/NewGameResponse}}
                            :handler    (fn [{:keys [body-params] :as req}]
-                                         (http/ok (h/new-game (util/get-client-ip req) body-params)))}}))
+                                         (ok-or-bad-request (game/host-game (util/get-client-ip req) body-params)))}}))
         (api/context
           "/game/{session-id}" []
           :tags ["game"]
           (build-session-route "/join" :post "" {:playerName s/Str} schema/JoinResponse
-                               (fn [{{:keys [session-id]} :path-params {:keys [playerName]} :query-params :as req}]
-                                 (http/ok (h/join (util/get-client-ip req) session-id playerName))))
-          (build-session-route "/all-joined" :get "" {} schema/AllJoinedResponse
+                               (fn [{{:keys [session-id]} :path-params {:keys [playerName]} :body-params :as req}]
+                                 (ok-or-bad-request (game/join-game session-id (util/get-client-ip req) playerName))))
+          (build-session-route "/has-joined" :get "" {} schema/HasJoinedResponse
                                (fn [{{:keys [session-id]} :path-params :as req}]
-                                 (http/ok (h/all-joined? (util/get-client-ip req) session-id ))))
+                                 (ok-or-bad-request (game/has-joined-game? session-id (util/get-client-ip req)))))
+          (build-session-route "/all-joined" :get "" {} schema/AllJoinedResponse
+                               (fn [{{:keys [session-id]} :path-params}]
+                                 (ok-or-bad-request (game/have-all-joined-game? session-id))))
           (build-session-route "/start-clock" :post "" {} schema/StartClockResponse
                                (fn [{{:keys [session-id]} :path-params :as req}]
-                                 (http/ok (h/start-clock (util/get-client-ip req) session-id ))))
-          (build-session-route "/clock-started" :get "" {} schema/ClockStartedResponse
+                                 (ok-or-bad-request (game/start-game session-id (util/get-client-ip req)))))
+          (build-session-route "/ready" :get "" {} schema/ReadyResponse
                                (fn [{{:keys [session-id]} :path-params :as req}]
-                                 (http/ok (h/clock-started? (util/get-client-ip req) session-id ))))
-          (build-session-route "/list-players" :get "" {} schema/ListPlayersResponse
+                                 (ok-or-bad-request (game/get-ready-state session-id (util/get-client-ip req)))))
+          (build-session-route "/vote" :post "" {:targetName s/Str} schema/VoteResponse
+                               (fn [{{:keys [session-id]} :path-params {:keys [targetName]} :body-params :as req}]
+                                 (ok-or-bad-request (game/vote-for-spy session-id (util/get-client-ip req) targetName))))
+          (build-session-route "/guess" :post "" {:location s/Str} schema/GuessResponse
+                               (fn [{{:keys [session-id]} :path-params {:keys [location]} :body-params :as req}]
+                                 (ok-or-bad-request (game/guess-location session-id (util/get-client-ip req) location))))
+          (build-session-route "/result" :get "" {} schema/ResultResponse
+                               (fn [{{:keys [session-id]} :path-params}]
+                                 (ok-or-bad-request (game/get-game-result session-id))))
+          (build-session-route "/close" :delete "" {} schema/CloseResponse
                                (fn [{{:keys [session-id]} :path-params :as req}]
-                                 (http/ok (h/list-players (util/get-client-ip req) session-id ))))
-          (build-session-route "/vote" :post "" {:playerName s/Str} schema/VoteResponse
-                               (fn [{{:keys [session-id]} :path-params {:keys [playerName]} :query-params :as req}]
-                                 (http/ok (h/vote (util/get-client-ip req) session-id playerName))))
-          (build-session-route "/list-locations" :get "" {} schema/ListLocationsResponse
-                               (fn [{{:keys [session-id]} :path-params :as req}]
-                                 (http/ok (h/list-locations (util/get-client-ip req) session-id ))))
-          (build-session-route "/guess" :post "" {:playerName s/Str} schema/GuessResponse
-                               (fn [{{:keys [session-id]} :path-params {:keys [playerName]} :query-params :as req}]
-                                 (http/ok (h/guess (util/get-client-ip req) session-id playerName))))
-          (build-session-route "/result" :get "" {:playerName s/Str} schema/ResultResponse
-                               (fn [{{:keys [session-id]} :path-params :as req}]
-                                 (http/ok (h/result (util/get-client-ip req) session-id))))
-          (build-session-route "/close" :delete "" {:playerName s/Str} schema/CloseResponse
-                               (fn [{{:keys [session-id]} :path-params :as req}]
-                                 (http/ok (h/close (util/get-client-ip req) session-id))))))
+                                 (ok-or-bad-request (game/close-game session-id (util/get-client-ip req)))))))
       (sweet/routes
         (route/resources "/")
         (route/not-found "404 Not Found"))))
