@@ -9,9 +9,13 @@ ns("Hiccup",
                 let attrs = tpl.shift();
                 let elem = document.createElement(tag);
                 Object.entries(attrs).forEach((entry)=>{
-                    let attr = document.createAttribute(entry[0]);
-                    attr.value = entry[1];
-                    elem.setElementNode(attr);
+                    if ((typeof entry[1]) === "function") {
+                        elem.addEventListener(entry[0],entry[1]);
+                    } else {
+                        let attr = document.createAttribute(entry[0]);
+                        attr.value = entry[1];
+                        elem.setElementNode(attr);
+                    }
                 });
                 tpl.forEach((child)=>{
                     elem.appendChild(build(child));
