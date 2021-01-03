@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Spyfall With A Vengeance</title>
+        <!-- Bootstrap css -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <!-- nes.css -->
+        <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+        <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
+        <style>
+            html, body, pre, code, kbd, samp {
+                font-family: 'Press Start 2P', cursive;
+            }
+        </style>
+        <link href="style/my-style.css" rel="stylesheet" />
+        <!-- registry -->
+        <script src="util/namespace.js"></script>
+        <!-- script files -->
+        <script src="script/app-root.js"></script>
+        <script src="script/game-data.js"></script>
+        <script src="script/game-service.js"></script>
+        <script src="script/http-client.js"></script>
+        <script src="script/timer.js"></script>
+        <script src="script/form.js"></script>
+        <script src="script/template.js"></script>
+        <!-- init script -->
+        <script>
+            var app = importNamespace("AppRoot");
+        </script>
+    </head>
+    <body onload="app.init(this)">
+    </body>
+</html>

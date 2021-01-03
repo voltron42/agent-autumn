@@ -78,7 +78,7 @@ export class GameComponent implements OnInit {
     }
   }
 
-  confirmHost(retryCount:number=GameComponent.defaultRetries) {
+  confirmHost() {
     this.submitHostRequest(GameComponent.defaultRetries);
     GameComponent.showModal("host-modal");
   }
@@ -88,7 +88,7 @@ export class GameComponent implements OnInit {
       this.state.sessionID = resp.sessionID;
       this.waitForAllJoined();
     },this.buildErrorHandler([404],retryCount,()=>{
-      this.confirmHost(retryCount - 1);
+      this.submitHostRequest(retryCount - 1);
     }));
   }
 
@@ -187,7 +187,7 @@ export class GameComponent implements OnInit {
   private pollClock() {
     let now = (new Date()).getTime();
     if (now < this.state.endTime) {
-      let diff = Math.floor((this.state.endTime)/1000);
+      let diff = Math.floor((this.state.endTime - now)/1000);
       this.countdown = [
         Math.floor(diff/60),
         diff % 60

@@ -12,4 +12,5 @@
                  [ring/ring-mock "0.4.0"]
                  [org.clojure/core.async "1.3.610"]
                  [org.clojure/data.codec "0.1.1"]]
-  :repl-options {:init-ns agent-autumn.core})
+  :repl-options {:init-ns agent-autumn.core}
+  :resource-paths ["resources"])
