@@ -16,18 +16,18 @@
         <!-- registry -->
         <script src="util/namespace.js"></script>
         <!-- script files -->
-        <script src="script/app-root.js"></script>
+        <script src="script/main.js"></script>
         <script src="script/game-data.js"></script>
         <script src="script/game-service.js"></script>
         <script src="script/http-client.js"></script>
         <script src="script/timer.js"></script>
         <script src="script/form.js"></script>
-        <script src="script/template.js"></script>
+        <script src="script/hiccup.js"></script>
         <!-- init script -->
         <script>
-            var app = importNamespace("AppRoot");
+            var init = importNamespace("Main");
         </script>
     </head>
-    <body onload="app.init(this)">
+    <body onload="init(this)">
     </body>
 </html>
