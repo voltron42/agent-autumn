@@ -25,15 +25,13 @@ ns("HttpClient",
                         };
                         if ((typeof req.callback) === "function") {
                             req.callback(resp);
-                        } else {
-                            if (xhttp.status >= 200 && xhttp.status < 400) {
-                                if ((req.success) === "function") {
-                                    req.success(resp);
-                                }
-                            } else if (xhttp.status >= 400) {
-                                if ((req.failure) === "function") {
-                                    req.failure(resp);
-                                }
+                        } else if ((typeof req.callbacks) === "object") {
+                            let statusCallback = req.callbacks[resp.status];
+                            let defaultCallback = req.callbacks["default"];
+                            if (statusCallback) {
+                                statusCallback(resp);
+                            } else if (defaultCallback) {
+                                defaultCallback(resp);
                             }
                         }
                     }
@@ -42,7 +40,7 @@ ns("HttpClient",
                 if ((typeof reqBody) === "object") {
                     reqBody = JSON.stringify(reqBody);
                 }
-                xhttp.open(req.method,req.url);
+                xhttp.open(req.method,req.url,true);
                 if (reqBody) {
                     xhttp.send(reqBody);
                 } else {
