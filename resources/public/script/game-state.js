@@ -8,6 +8,14 @@ ns("GameState",
                 props[key] = value;
                 onChangeFn(me);
             };
+            this.setIn = (keys,value)=>{
+                let finalKey = keys.pop();
+                let obj = keys.reduce((out,key)=>{
+                    return out[key];
+                },props);
+                obj[finalKey] = value;
+                onChangeFn(me);
+            };
             this.setAll = (aMap)=>{
                 Object.entries(aMap).forEach((entry)=>{
                     props[entry[0]] = props[entry[1]];
@@ -17,6 +25,11 @@ ns("GameState",
             this.get = (key)=>{
                 return props[key];
             };
+            this.getIn = (keys)=>{
+                return keys.reduce((out,key)=>{
+                    return out[key];
+                },props);
+            }
             this.delete = (key)=>{
                 delete props[key];
                 onChangeFn(me);

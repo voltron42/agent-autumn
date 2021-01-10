@@ -23,17 +23,17 @@ import {CloseResp} from "../../model/close-resp";
 })
 export class GameComponent implements OnInit {
 
-  private state: GameState = new GameState();
+  public state: GameState = new GameState();
 
-  private countdown: string = "";
+  public countdown: string = "";
 
-  private hostForm: FormGroup = this.fb.group({
+  public hostForm: FormGroup = this.fb.group({
     playerName:[''],
     addlPlayerCount:[3],
     durationMinutes:[10]
   });
 
-  private joinForm: FormGroup = this.fb.group({
+  public joinForm: FormGroup = this.fb.group({
     sessionID:[''],
     playerName:['']
   });

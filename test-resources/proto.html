@@ -1,0 +1,25 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <title>Template event with function prototype</title>
+        <script>
+          (function(){
+            let action = ()=>{
+              alert("You pushed my button!\nYou Bastard!");
+            };
+            this.main = ()=>{
+              document.getElementById("target1").innerHTML = `<button onclick="${action}">Push me!</button>`
+
+              let btn = document.createElement("button");
+              btn.addEventListener("click",action);
+              btn.appendChild(document.createTextNode("No, push me!"));
+              document.getElementById("target2").appendChild(btn);
+            }
+          })()
+        </script>
+    </head>
+    <body onload="main()">
+        <div id="target1"></div>
+        <div id="target2"></div>
+    </body>
+</html>

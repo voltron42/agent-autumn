@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spyfall With A Vengeance</title>
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- nes.css -->
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <link href="https://unpkg.com/nes.css/css/nes.css" rel="stylesheet" />
+    <style>
+        html, body, pre, code, kbd, samp {
+            font-family: 'Press Start 2P', cursive;
+        }
+    </style>
+    <link href="../../resources/public/style/my-style.css" rel="stylesheet" />
+    <!-- mock xmlhttprequest -->
+    <script src="mock-script/mockXmlHttpReq.js"></script>
+    <!-- registry -->
+    <script src="../../resources/public/util/namespace.js"></script>
+    <!-- script files -->
+    <script src="../../resources/public/script/main.js"></script>
+    <script src="../../resources/public/script/game-data.js"></script>
+    <script src="../../resources/public/script/game-service.js"></script>
+    <script src="../../resources/public/script/http-client.js"></script>
+    <script src="../../resources/public/script/timer.js"></script>
+    <script src="../../resources/public/script/form.js"></script>
+    <script src="../../resources/public/script/hiccup.js"></script>
+    <!-- init script -->
+    <script>
+      var init = importNamespace("Main");
+    </script>
+</head>
+<body onload="init(this)">
+</body>
+</html>

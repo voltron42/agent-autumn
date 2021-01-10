@@ -15,11 +15,11 @@
 (s/defschema JoinResponse
   {:joining s/Bool})
 
-(s/defschema AllJoinedResponse
-  {:allJoined s/Bool})
-
 (s/defschema HasJoinedResponse
   {:hasJoined s/Bool})
+
+(s/defschema AllJoinedResponse
+  {:allJoined s/Bool})
 
 (s/defschema StartClockResponse
   {:startingClock s/Bool})

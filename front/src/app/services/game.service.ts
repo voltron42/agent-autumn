@@ -38,7 +38,7 @@ export class GameService {
   }
 
   public startClock(state:GameState):Observable<StartClockResp>{
-    return this.hc.get<StartClockResp>("/game/"+state.sessionID+"/start-clock");
+    return this.hc.post<StartClockResp>("/game/"+state.sessionID+"/start-clock",{});
   }
 
   public getReadyState(state:GameState):Observable<ReadyResp> {

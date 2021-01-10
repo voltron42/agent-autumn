@@ -1,50 +1,48 @@
 <div *ngIf="!(state.sessionID)" class="d-flex flex-column text-center">
-  <div>
-    <button class="nes-btn is-error" (click)="host()">HOST</button>
-    <dialog class="nes-dialog is-rounded" id="host-modal">
-      <form method="dialog" [formGroup]="hostForm">
-        <p class="title">Host Game</p>
-        <p>Player Name: </p>
-        <div class="nes-field">
-          <label for="host-name">Player Name:</label>
-          <input type="text" id="host-name" class="nes-input" formControlName="playerName">
-        </div>
-        <div class="nes-field">
-          <label for="player-count">Additional Player Count:</label>
-          <input type="number" id="player-count" class="nes-input" formControlName="addlPlayerCount">
-        </div>
-        <div class="nes-field">
-          <label for="duration">Game Clock (minutes):</label>
-          <input type="number" id="duration" class="nes-input" formControlName="durationMinutes">
-        </div>
-        <menu class="dialog-menu">
-          <button class="nes-btn" (click)="cancelHost()">Cancel</button>
-          <button class="nes-btn is-primary" (click)="confirmHost()">Confirm</button>
-        </menu>
-      </form>
-    </dialog>
-  </div>
-  <div>
-    <button class="nes-btn is-error" (click)="join()">JOIN</button>
-    <dialog class="nes-dialog is-rounded" id="join-modal">
-      <form method="dialog" [formGroup]="joinForm">
-        <p class="title">Host Game</p>
-        <p>Player Name: </p>
-        <div class="nes-field">
-          <label for="session-id">Session ID:</label>
-          <input type="text" id="session-id" class="nes-input" formControlName="sessionID">
-        </div>
-        <div class="nes-field">
-          <label for="player-name">Player Name:</label>
-          <input type="text" id="player-name" class="nes-input" formControlName="playerName">
-        </div>
-        <menu class="dialog-menu">
-          <button class="nes-btn" (click)="cancelJoin()">Cancel</button>
-          <button class="nes-btn is-primary" (click)="confirmJoin()">Confirm</button>
-        </menu>
-      </form>
-    </dialog>
-  </div>
+  <button class="nes-btn is-error" (click)="host()">HOST</button>
+  <button class="nes-btn is-error" (click)="join()">JOIN</button>
+  <dialog class="nes-dialog is-rounded" id="host-modal">
+    <form method="dialog" [formGroup]="hostForm">
+      <p class="title">Host Game</p>
+      <p>Player Name: </p>
+      <div class="nes-field">
+        <label for="host-name">Player Name:</label>
+        <input type="text" id="host-name" class="nes-input" formControlName="playerName">
+      </div>
+      <div class="nes-field">
+        <label for="player-count">Additional Player Count:</label>
+        <input type="number" id="player-count" class="nes-input" formControlName="addlPlayerCount">
+      </div>
+      <div class="nes-field">
+        <label for="duration">Game Clock (minutes):</label>
+        <input type="number" id="duration" class="nes-input" formControlName="durationMinutes">
+      </div>
+      <menu class="dialog-menu">
+        <button class="nes-btn" (click)="cancelHost()">Cancel</button>
+        <button class="nes-btn is-primary" (click)="confirmHost()">Confirm</button>
+      </menu>
+    </form>
+  </dialog>
+  <dialog class="nes-dialog is-rounded" id="join-modal">
+    <form method="dialog" [formGroup]="joinForm">
+      <p class="title">Host Game</p>
+      <p>Player Name: </p>
+      <div class="nes-field">
+        <label for="session-id">Session ID:</label>
+        <input type="text" id="session-id" class="nes-input" formControlName="sessionID">
+      </div>
+      <div class="nes-field">
+        <label for="player-name">Player Name:</label>
+        <input type="text" id="player-name" class="nes-input" formControlName="playerName">
+      </div>
+      <menu class="dialog-menu">
+	@FindBy(css="")
+	private WebElement webElement;
+        <button class="nes-btn" (click)="cancelJoin()">Cancel</button>
+        <button class="nes-btn is-primary" (click)="confirmJoin()">Confirm</button>
+      </menu>
+    </form>
+  </dialog>
 </div>
 <div *ngIf="state.sessionID && state.isHost && state.joining" class="text-center">
   <h3>Waiting for confirmation of host ...</h3>
@@ -115,7 +113,7 @@
   <div *ngIf="state.role=='SPY'">Location: {{state.location}}</div>
 </div>
 <div *ngIf="state.sessionID && state.isHost" class="d-flex flex-column text-center">
-  <div><button class="nes-btn is-error" (click)="close()">CLOSE GAME</button></div>
+  <button class="nes-btn is-error" (click)="close()">CLOSE GAME</button>
   <dialog class="nes-dialog is-rounded" id="close-modal">
     <form method="dialog">
       <p class="title">Close?</p>
