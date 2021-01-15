@@ -4,34 +4,8 @@ ns("GameState",
         return (onChangeFn)=>{
             let props = {};
             let me = this;
-            this.set = (key,value)=>{
+            let set = (key,value)=>{
                 props[key] = value;
-                onChangeFn(me);
-            };
-            this.setIn = (keys,value)=>{
-                let finalKey = keys.pop();
-                let obj = keys.reduce((out,key)=>{
-                    return out[key];
-                },props);
-                obj[finalKey] = value;
-                onChangeFn(me);
-            };
-            this.setAll = (aMap)=>{
-                Object.entries(aMap).forEach((entry)=>{
-                    props[entry[0]] = props[entry[1]];
-                });
-                onChangeFn(me)
-            };
-            this.get = (key)=>{
-                return props[key];
-            };
-            this.getIn = (keys)=>{
-                return keys.reduce((out,key)=>{
-                    return out[key];
-                },props);
-            }
-            this.delete = (key)=>{
-                delete props[key];
                 onChangeFn(me);
             };
             this.reset = ()=>{
@@ -40,5 +14,24 @@ ns("GameState",
                 });
                 onChangeFn(me);
             };
+            this.setSessionId = (sessionId)=>{
+                props.sessionId = sessionId;
+            };
+            this.host = ()=>{
+                props.isHost = true;
+                props.joining = true;
+            };
+            this.join = ()=>{
+                props.isHost = false;
+                props.joining = true;
+            };
+            this.setJoined = ()=>{
+                props.joining = false;
+            };
+            this.setAllHaveJoined = ()=>{
+                props.haveAllJoined = true;
+            }
+            this.applyReady = (ready)=>{};
+            this.applyResult = (result)=>{};
         };
     });

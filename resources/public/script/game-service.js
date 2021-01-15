@@ -51,7 +51,7 @@ ns("GameService",
           waitForResult(state,retryCount-1);
         },buildBaseCallbacks(state,(resp)=>{
           if (resp.body.spy) {
-            state.setAll(resp.body);
+            state.applyResult(resp.body);
             // final state
           } else {
             setTimeout(()=>{
@@ -66,7 +66,7 @@ ns("GameService",
           waitForStart(state,retryCount-1);
         },buildBaseCallbacks(state,(resp)=>{
           if (resp.body.endTime) {
-            state.setAll(resp.body);
+            state.applyReady(resp.body);
             waitForResult(state,defaultRetries);
           } else {
             setTimeout(()=>{
@@ -81,7 +81,7 @@ ns("GameService",
           waitForAllJoined(state,retryCount-1);
         },buildBaseCallbacks(state,(resp)=>{
           if (resp.body.allJoined) {
-            state.set("haveAllJoined",true);
+            state.setAllHaveJoined();
             if (!state.get("isHost")) {
               waitForStart(state,defaultRetries);
             }
@@ -98,7 +98,7 @@ ns("GameService",
           waitForHasJoined(state,retryCount-1);
         },buildBaseCallbacks(state,(resp)=>{
           if (resp.body.hasJoined) {
-            state.set("joining",false);
+            state.setJoined();
             waitForAllJoined(state,defaultRetries);
           } else {
             setTimeout(()=>{
@@ -116,14 +116,11 @@ ns("GameService",
       req.locList = Object.keys(_.data);
       req.location = req.locList[Math.floor(Math.random() * req.locList.length)];
       req.roleList = _.data[req.location];
-      state.setAll({
-        "isHost":true,
-        "joining":true,
-      });
+      state.host();
       callPost("/host",req,[404],retries,()=>{
         submitHostRequest(state,hostName,playerCount,durationMinutes,retries-1);
       },buildBaseCallbacks(state,(resp)=>{
-        state.set("sessionID",resp.body.sessionID);
+        state.setSessionId(resp.body.sessionID);
         waitForHasJoined(state,defaultRetries);
       }));
     });
@@ -136,10 +133,7 @@ ns("GameService",
         }));
     });
     let submitJoinRequest = ((state,retries)=>{
-      state.setAll({
-        "isHost":false,
-        "joining":true,
-      });
+      state.join();
       callPost("/game/" + state.get("sessionID") + "/join",{playerName:state.get("playerName")},
         [404],retries,()=>{
           submitJoinRequest(state,retries-1);
