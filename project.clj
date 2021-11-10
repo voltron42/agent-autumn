@@ -13,4 +13,5 @@
                  [org.clojure/core.async "1.3.610"]
                  [org.clojure/data.codec "0.1.1"]]
   :repl-options {:init-ns agent-autumn.core}
-  :resource-paths ["resources"])
+  :resource-paths ["resources"]
+  :main agent-autumn.server/-main)
